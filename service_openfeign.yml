@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: service-openfeign
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/springtx?useUnicode=true&characterEncoding=utf-8
+#    username: NO281
+#    password: 343364683
+    #开始配置consul的服务注册
+  cloud:
+    consul:
+      host: 127.0.0.1  #consul服务器的主机地址
+      port: 8530       #consul服务器的IP地址
+      discovery:
+        #是否需要注册
+        register: true #消费者服务不是必须需要注册到注册中心上,false也行
+        #注册的实例ID
+        instance-id: ${spring.application.name}-1
+        #服务的名称
+        service-name: ${spring.application.name}
+        #服务的请求端口
+        port: ${server.port}
+        #指定开启IP地址注册
+        prefer-ip-address: true #consul可以使用ip地址或dns进行解析，这里使用ip地址（默认为true）
+        #当前服务的请求IP
+        ip-address: ${spring.cloud.client.ip-address}
+  #指定配置环境
+  profiles:
+    active: dev
+
+server:
+  port: 8071
+
+
+#配置调用服务默认的超时时间 默认时间1s
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+#开启openfeign调用服务过程中 对hystrix支持
+#开启Hystrix降级处理
+  circuitbreaker:
+    enabled: true #在Feign中开启Hystrix
+
+
